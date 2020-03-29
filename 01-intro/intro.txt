@@ -1,0 +1,41 @@
+**********************************************************
+                     Introduction AJAX
+**********************************************************
+
+Définition :
+AJAX vient de l'anlglais qui signifie Asynchronous Javascript And XML.
+AJAX n'est pas un langage, mais une combinaison de Javascript côté Client, et de PHP côté serveur, accompagnés de XML, JSON, texte brut ou HTML pour transporter les données entre les deux.
+-------------------
+A quoi ça sert ? 
+
+AJAX permet d'échanger des données entre client et serveur pour changer le contenu d'une partie de la page web SANS recherger toutes la page.
+Exemples :
+- Facebook
+- Maison du monde : quand on clique sur "plus de produits" les produits s'affichent sans recherger toutes la page.4
+
+
+-------------------
+Comment ça marche ?
+
+Suite à un événement produit par l'internaute ( exemple un click), un script Javascript envoie une requête HTTP vers le serveur en utilisant l'objet XMLHttpRequest.
+Cet objet a été créé uniquement pour envoyer des reqêtes HTTP en post ou en GET vers un serveur.
+Puis le serveur reçoit la requête, prépare la réponse et l'envoie vers le navigateur.
+Le JS reçoit cette réponse, et l'insère dans le bloc concerné dans la page  web, sans recharger toute la page.
+-------------------
+
+Pourquoi "Asynchronous" ?
+
+Ce terme dans AJAX signifie que les requêtes envoyées vers le serveur sont asynchrones : le JS n'attend pas la réponse du serveur pour continuer son exécution. C'est seulement quand une réponse est reçue, q'une fonction se déclenche pour la traiter et l'insérer dans la page.
+
+
+
+
+
+------------------------
+XML et JSON :
+XML signifie Extensible Markup Language. C'est une façon de structure les données dans des balises personnalisées. Ainsi on peut envoyer ces informations d'un serveur vers un client.
+
+JSON signifie : Javascript Object Notation. C'est une autre façon de structurer les données inspirée de la notation des objets du Javascript. Exemple :
+{ "prenom" : "John", "nom" : "Doe", "age" : 31 } 
+
+Note : Les paires indices/valeurs sont obligatoirement entre guillemets.

@@ -1,0 +1,49 @@
+<!-- Objectif: pouvoir s'inscrire à la newsletter sans que la page ne se recharge. Le serveur vérifie que vous n'êtes pas déjà inscrit, et renvoie le message adapté en version HTML (et non pas JSON).
+Créer une BDD "newsletter" avec une table "abonne" et 2 champs : id_email INT PK AI, email VARCHAR(255) .  -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>Inscription à la newsletter</h1>
+    <form action="" method="post">
+        <div><span id="resultat"></span></div> <!-- pour afficher les messages  -->
+        <input type="text" id="email" placeholder="Saisissez votre email">
+        
+        <input type="submit" value="S'inscrire">
+    </form>
+    <script>
+        $(function(){
+            $('form').submit(function(e){
+                e.preventDefault(); // pour bloquer l'envoie du formulaire qui rafraîchit le navigateur
+                let email = $('#email').val(); //on récupère la valeur saisie dans le champ #email.
+
+
+                //2-Fonction de traitement de la réponse du serveur
+                function reponse(reponsePHP){ // ce paramètre reçoit automatiquemnt la réponse du serveur
+                  console.log(reponsePHP); // on reçoit bien du HTML du serveur
+                  if(reponsePHP){ // si la réponse existe, on l'affiche
+                    $('#resultat').html(reponsePHP);
+                  }
+
+                }
+
+
+                //1- Envoie de l'email au serveur avec une requête en POST : 
+                $.post('inscription.php', {email : email}, reponse, 'html'); //on envoie les données en POST. 4 argument :   URL du fichier de destination, les données envoyées sous forme d'objet  ou de string selon la syntaxe "propriete=valeur", la fonction de traitement de la réponse côté JS, format de la réponse (ici on attend HTML). $.post() est équivalent à jQuery.post().
+
+            });//submit
+
+        }); // fin  du document ready
+
+    </script>
+</body>
+</html>

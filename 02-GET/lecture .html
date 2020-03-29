@@ -1,0 +1,40 @@
+<!-- Exercice : voici un extrait  de texte dont l'indentifiant est 105. L'orsqu'on clique  sur "lire la suite",une requête est envoyée au serveur en GET avec l'id 105.
+Le serveur répond le texte complet.
+Vous recevez le texte complet  en JS, puis l'affichez dans le <p> . -->
+
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lecture</title>
+        <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+        
+    </head>
+    <body>
+        <h1>Exercice</h1>
+        <p id="105">Lorem ipsum dolor sit amet consectetur adipisicing elit.<a href="#" >lire la suite</a></p>
+        <script>
+            $(function(){
+                // 2- fonction de traitement de la réponse :
+                function suite(suitePHP){
+                    console.log(suitePHP); // on voit que nous avons une propriété "affiche".
+                    if(suitePHP.affiche){
+                        // $('#105').html(suitePHP.affiche);
+                      $('a').remove();
+                      $('#105').append(suitePHP.affiche);
+                    }
+
+                }
+                 // 1 - envoie de la requête :
+                $('a').click(function(){
+                    $.get('lecture.php', {paragraphe:'suite'}, suite , 'json');
+                }); //click
+            }); // fin du document ready
+
+        </script>
+    </body>
+    </html>

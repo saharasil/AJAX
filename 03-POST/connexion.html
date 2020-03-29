@@ -1,0 +1,76 @@
+<!-- Exercice : 
+creer une BDD "forum" avec une table "membre" et 3 champs  : id_membre INT PK AI, pseudo VARCHAR(255), mdp VARCHAR(255). VOUS y mettez un pseudo (tintin) et un mdp non haché (milou).
+- créer un formulaire HTML avec les champs pseudo et mdp
+- envoyer les données saisies dans le formulaire à connexion.php . Ce  script vérifie le pseudo et le mdp en BDD selon les étapes suivantes:
+  * vérifier si les champs sont remplis, sinon envoyer au navigateur "Veuillez eremplir tous les champs".
+  - puis sélectionner en BDD le pseudo et le mdp . si la BDD répond aucune ligne, on envoie au navigateur "Erreur sur les identifiants".
+   - Si non on envoie au navigateur "vous êtes connecté! ".
+
+-->
+
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <title>Forum</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1>Inscription</h1>
+      <form action="" method="post">
+        <div class="form-group">
+          <div id="message"></div>
+          <label for="pseudo">Pseudo</label>
+          <input type="text" name="pseudo" class="form-control" id="pseudo" aria-describedby="emailHelp">
+        </div>
+        <div class="form-group">
+          <label for="mdp">Mot de passe</label>
+          <input type="password" name="mdp" class="form-control" id="mdp">
+        </div>
+        <button type="submit" id="btn" class="btn btn-primary">Envoyer</button>
+      </form>
+    </div>
+    <script>
+
+      $(function(){
+            $('form').submit(function(e){
+                    e.preventDefault(); // pour bloquer l'envoie du formulaire qui rafraîchit le navigateur
+                    let pseudo = $('#pseudo').val(); //on récupère la valeur saisie dans le champ #pseudo.
+                    let mdp= $('#mdp').val(); //on récupère la valeur saisie dans le champ #pseudo.
+
+                        function reponse(reponsePHP){
+
+                            console.log(reponsePHP); // on reçoit bien du HTML du serveur
+                            
+                            if(reponsePHP){ // si la réponse existe, on l'affiche
+                              $('#message').html(reponsePHP);
+                            }
+                        }
+
+            
+
+                    $.post('connexion.php',{pseudo : pseudo, mdp : mdp}, reponse, 'html');
+
+
+
+            }); //fin fonction submit
+      }); //fin du document ready
+
+    </script>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>
