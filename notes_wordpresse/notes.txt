@@ -1,0 +1,335 @@
+************************************************************************************************************
+                                             Wordpress developpeur
+*************************************************************************************************************
+
+
+
+                                        Installation de Wordpress
+**************************************************************************************************************
+Exercice : vous installez un nouveau WordPress disponible sur https://fr.wordpress.org/download/
+Nom du dossier dans htdocs : /eprojet
+Nom de la BDD : eprojet
+Titre du site : Mes petites annonces
+
+
+************************************************************************************************
+                                        La hierarchie de WP
+*************************************************************************************************
+
+On installe une extension appelée "SHOW CURRENT TEMPLATE" traduit par (afficher le modèle courant) de Jotaki Taisuke
+
+On télécharge le visuel de la hierarchie de WP https://developer.wordpress.org/files/2014/10/Screenshot-2019-01-23-00.20.04.png
+
+Visuel de hierarchie / code couleur : 
+    Bleu : template (fichiers) principaux et prioritaires de WP
+    Vert : Template secondaire
+    Orange : Template qui peuvent être personalisés
+    Gris : Indicateur de direction, permet de s'orienter dans le shéma 
+
+La hierarchie de WP répond à la question quel fichier de wp sera utilisé pour afficher un type de contenue.
+Par exemple, quand on affiche des articles en page d'accueil le template front-page.php est le 1er fichier que wp utilisera s'il existe,
+sinon il passe à home.php si il existe sinon en dernier recours il utilisera index.php
+Autre exemple : quand on affiche la liste des articles (= archive dans le language de WP) par auteur, le template author.php
+est le 1er utilisé sinon archive.php sinon index.php
+
+
+--------------------------------------------------------------------------------------------------------------
+                    Description des fichiers template de base de la hierarchie : 
+--------------------------------------------------------------------------------------------------------------
+
+Un template est un modèle de page
+S'il y a 100 pages sur le site, il n'y a pas 100 fichiers pour autant.
+Les contenus sont enregistrés dans la BDD et seulement quelques fichiers appelés template affiche les contenus dynamiquement.
+- index.php : fichier principale qui est utilisé si aucun des autres template n'existe. C'est pour cela qu'il est obligatoire dans le thème
+- archive.php affiche la liste (= archive dans le language de wp) des articles 
+- category.php affiche la liste des articles d'une catégorie
+- single.php affiche un article seul créé dans le back-office
+- page.php : affiche une page créée dans le BO
+- front-page.php : affiche la page d'accueil
+- 404.php : page qui s'affiche quand un contenue n'est pas trouvé
+- search.php : page qui affiche les résultats d'une recherche
+
+
+--------------------------------------------------------------------------------------------------------------
+Les fichiers d'inclusions
+- header.php : fichier d'inclusion du HAUT du site(doctype, head, ouverture de body, header...)
+- footer.php : fichier d'inclusion du BAS du site
+- sidebar.php : fichier d'inclusion de la barre latérale
+- functions.php : fichier d'inclusion qui contient les fonctions du thème
+--------------------------------------------------------------------------------------------------------------------------
+Les templates spécifiques : 
+Définition du slug (terme anglais qui représnte l'identifiant d'un contenue) par exemple si vous créez une page appelée contact son slug sera "contact". 
+Si vous créer un article "seul sur mars" son slug sera "seul-sur-mars"
+Personaliser une page :
+Vous pouvez créer un template spécifique appelé page-contact.php où "contact" est le slug de votre page créée dans le BackOffice.
+Vous pouvez aussi créer un template spécifique appelé page-4.php ou 4 est l'id de votre page créer dans le Backoffice.
+note pour savoir ce que vous pouvez créer en terme de template spécifique regardez les rectangles orange de la hierarchie de WP.
+
+
+**************************************************************************************************************
+                                        Création d'un thème
+**************************************************************************************************************
+Le sujet du site : site de petites annonces de véhicule d'occasion
+Les grandes étapes : 
+01. Création du thème et de ses templates de base
+02. Zones de widgets
+03. Zones de menus
+04. Création d'un menu avec des catégories
+05. Type de contenue "annonces" dans le BO avec des champs personalisés
+06. Template spécifique pour afficher le détail d'une annonce
+07. Template pour afficher la liste des annonces d'une catégorie
+
+--------------------------------------------------------------------------------------------------------------
+                        01. Création du thème et de ses templates de bases
+-----------------------------------------------------------------------------------------------------------
+Créer un dossier "theme-eprojet" dans /wp-content/themes/
+Nous allons y mettre tous les fichiers de notre thème
+
+--------------------------------------------------------------------------------------------------------------
+screenshot.png : il s'agit de l'image du thème qui apparait en vignette dans le BO
+--------------------------------------------------------------------------------------------------------------
+style.css :  la feuille de style contient une zone en commentaire qui permet de déclarer le thème dans le backoffice et 
+d'y afficher toutes ses informations.
+On y met le code suivant :
+
+/*
+Theme Name: Eprojet
+Author: Sahar
+Description: Thème du site petites annonces véhicules d'occasion
+Version: 1.0
+Tags: petites annonces, occasion, voitures, deux-roues, utilitaires
+*/
+
+
+Attention WP est sensible à la casse et aux espaces !! 
+----------------------------------------------------------------
+Création du dossier /assets/
+On met dans ce dossier toutes les ressources spécifiques au thème (JS, CSS particulier, icônes, images spécifiques au thème...)
+------------------------
+header.php : 
+Fichier qui contient le haut du site. Pour le code voir le fichier directement.
+------------------------
+footer.php :
+Fichier qui contient le bas du site. Pour le code voir le fichier directement.
+------------------------
+On crée les 6 fichiers suivants :
+                index.php
+                page.php
+                single.php
+                archive.php
+                front-page.php
+                category.php
+
+
+Nous avons mis le code suivant dans ces fichiers : 
+
+<?php
+get_header(); 
+    if (have_posts()) : 
+        while(have_posts()) : the_post(); 
+?>
+            <h1 class="col-12">
+                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+            </h1>
+            <div class="col-12">
+                <?php the_content(); ?>
+            </div>
+<?php
+        endwhile; 
+    else :  
+        echo '<p>Aucun contenu à afficher</p>';
+    endif; 
+get_footer();
+?>
+
+------------------------------------------
+
+La boucle de Wordpress : 
+Dans les templates de WP nous mettrons toujours une boucle while même si il y a un seul contenue à récupérer.
+voir la boucle ci-dessus
+
+have_posts() : retourne un booleen pour savoir si reste des objets à afficher sur la page
+par exemple quand on cherche à afficher la liste d'articles, la fonction retourne true
+tant que tous les articles récupérés dans la BDD n'auront pas été affichés
+
+the_post() : à l'intérieur de la boucle while, la fonction récupère les données d'un post (exemple d'un article). Puis un curseur interne
+WP sélectionne le post suivant dans la liste de ceux que l'on a récupéré en BDD.
+quand le curseur a atteint le dernier post, alors have_posts()retourne false et la boucle s'arrête.
+
+the_content() : affiche le contenue du post
+
+the_title() : affiche le titre du post
+
+the_permalink : affiche le lien (url) du post
+
+the_excerpt() : affiche le résumé du post
+
+the_field() : affiche un champs personalisé dont le slug est spécifié en argument ex: the_field('marque') affiche le contenue du champ marque
+
+----------------------------------------------------------------
+En dehors de la boucle nous trouvons  
+        get_header() : inclusion du fichier header.php
+        get_footer() : inclusion du fichier footer.php
+        get_sidebar() : inclusion du fichier sidebar.php (barre latérale)
+        get_sidebar('droite') : inclusion du fichier sidebar-droite.php
+        get_template_part('content','exemple') : inclusion du fichier qui s'appelle content-exemple.php pour inclure une partie du template 
+        (ex :  bloc qui affiche 1 produit avec photo, prix, titre...)
+
+
+------------------------------------------------
+02. Zone de widgets
+------------------------------------------------
+Les trois étapes pour créer une Zone  de widgets :
+1- On déclare la zone de widgets  dans functions.php avec la fonction register_sidebar()
+2- On place la zone de widgets dans un template avec la fonction dynamic_sidebar()
+3- dans le BO, on n'oublie pas de placer un widget à l'intérieur de la zone pour qu'elle s'affiche.
+
+
+
+Création de la zone de widget pour l'entête de la page d'accueil :
+1° Nous avons déclarer la zone dans functions.php : 
+function eprojet_init_widgets(){
+        //déclaration de la zone widget pour le titre h1 de la page d'accueil :
+        register_sidebar(array(
+            'name'             => 'Zone entête', 
+            'id'               => 'zone-entete', 
+            'description'      => 'Ajoute des widgets à la zone entête de la page accueil',
+            'before_widget'    => '', 
+            'after_widget'     => '',
+            'before_title'     => '<h1>',
+            'after_title'      =>'</h1>',
+        ));
+}
+add_action('widgets_init','eprojet_init_widgets');
+
+2° Puis on place la zone de widgets dans le template, ici header.php :
+     if(is_front_page()):// fonction qui retourne true quand on affiche la page d'accueil
+            ?>
+                <div id="entete" class="align-items-center">
+                    <div class="container">
+                        <?php
+                            dynamic_sidebar('zone-entete') 
+                        ?>
+                    </div>
+                </div>
+            <?php
+        endif;
+3° Dans le BO, nous plaçons un widget TEXTE dans la zone avec pour titre "un site de petites annonces de véhicules d'occasion "
+
+
+Exercice : mettre une zone de widgets dans le footer de gauche avec un widget texte "16 rue de seine - 75005 Paris" à mettre dans le "contenu" (pas dans le titre) du widget.  on met des <div> à la place des <li> avant et après le widget.
+
+
+
+------------------------------------
+03- Zone de menus
+------------------------------------
+On crée le menu principale du site.
+
+Les trois étapes pour créer une zone de menu :
+1° On déclare la zon de menu dans  function.php avec la fonction register_nav_menu() 
+2° On place la zone de menu  dans un template avec la fonction wp_nav_menu()
+3° Dans le BO, on place un menu à l'intérieur de la zone . si elle est vide, WP y met un menu par défaut .
+
+1° Dans functions.php on déclare la zone de menu :
+
+ function eprojet_init_menus() {
+    register_nav_menu('primary', 'menu principale'); 
+
+ }
+
+ add_action('init', 'eprojet_init_menus'); 
+
+ 2° Puis on appelle la zone de menu dans header.php:
+
+     <?php
+        wp_nav_menu(array(
+            'theme_location'  => 'primary', // ID de la zone de menu déclarée dans functions.php
+            'menu_class'      => 'navbar-nav', // classes pour le CSS
+        ));// cette fonction appelle la zone de menu déclarée dans le fichier functions.php
+    ?>
+
+3° On crée un menu dans le BO et on l'ajoute à la zone principale.
+
+Exercice :  Créer une zone de menu dans le footer de droite, sans classe CSS. Vous y mettez un lien de menu vers la page "mentions légales" que vous créez dans le BackOffice
+---------------------------------------------
+04- Création d'un menu avec des catégories
+----------------------------------------------
+On va créer des catégories d'annonces et les ajouter au menu principale .
+
+    - Occasions
+        -- voitures
+        --Utilisataires 
+        -- Deux roues
+-----------------
+Exercice : vous crééer une page d'accueil appelée"home" dans le BO avec du  faux-texte . On doit arriver sur à cette page quand on clique sur "Mes petites annonces" du header. Vous l'ajoutez au menu principal à la place du lien " accueil" .
+
+--------------------------------------
+05- Type de contenu " annonces" dans le BO avec des champs personnalisés 
+----------------------------------
+
+Pour créer un nouveau type appelé "annonces" dans le BO, nous installons l'extension CUSTOM POST TYPE UT WebDevStudios.
+Dans le menu CPT UI:
+    > Ajouter/modifier des types de contenu
+    >Slug du type de publication : annonce 
+    >Libellé pour le pluriel : annonces >Libellé pour le singulier : Annonce
+    > Taxonomie > cocher "catégories (WP Core)" pour pouvoir utiliser nos catégories "Occasions", "voiture" , etc ....
+    > Enregistrer
+----------------------------
+Les champs personnalisés de notre type "annonce" :
+Pour ajouter des champs personnalisés, on installe l'extension ADVANCED CUSTOM FILEDS de Elliot Condon (ACF)
+------- Créer les trois annonces suivantes :
+        -Renault Mégane    occasion  + voiture
+        - Renault Trafic    occasion + utilitaires
+        - VW Caddy           Occasion + utlilitaires
+
+Vous ajouter l'annonce Fiat 500 dans le menu principal.
+----------------------
+
+Exercice : 
+créer un custom Post Type " Professionnels" pour afficher les professionnels qui proposent leurs services .
+Puis vous ajoutez aux champs titre et contenu de ce CPT, les champs personnalisés "code postale" (text), "ville"(texte) et "telephone" (texte) .
+Vous créer 1 professionnel'(titre, contenu, cp, ville, téléphone) que vous mettez dans le menu principale pour l'afficher (idées : Mydas, Carglass ....).
+
+
+--------------------------------------------
+06- Template spécifique pour afficgher le détail d'une annonce
+----------------------------------------
+
+Nous avons besoin d'un template spécifique pour afficher le détail d'une annonce
+
+En front on voit avec SHOW CURRENT TEMPLATE que l'on est dans single.php quand on clique sur une annonce.
+
+
+D'après la  hiérarchie , on peut en orange créer un fichier qui s'appelle single-$psttype.php où $pstype correspond au slug de notre type "annonce" (voir le menu CPT UT).
+
+On crée donc un fichier appelé single-annonce.php pour afficher le détail d'une annoce .
+Pour le code, voir le fichier.
+Dans ce fichier nous avons utilisé la onction the_field() pour afficher les champs personnalisés crées avec ACF. Elle reçoit en argument le slug du champ que l'on souhaite afficher. Ce slug de trouve dans le menu ACF >Détail de l'annonce> colonne "nom".
+
+
+---------------------------------------
+07- Template pour afficher la liste des annonces d'une catégories
+--------------------------------------
+
+Nous allons afficher la liste des annonces selon la catégoris choisie (occasions, voiture, utilitaires, deux roues).
+
+Quand on clique sur une catégorie, WP sélectionne par défaut les ARTICLES de cette catégorie. Or, nous voulons des posts de type  ANNONCE des catégories occasion, voiture ... En cliquant sur ces catégories, on voit que WP recherche en BDD des articles. Il nous faut donc lui indiquer de faire une requête en bdd sur le type ANNONCE avant de les afficher.
+
+Pour afficher le lien "Tous le professionnels" dans le menu principale nous sommes allés dans : CPT UI > onglet Modifier les types de publication > choisir Professionnels > Bloc "Settings" > ligne "Archivée "= Vrai.
+Cela permet de créer des archives (=liste dans la terminologie de WP) de tous les professionnels.
+
+
+--------------------------------------
+Exercice
+    -créer deux professionnels supplémentaires .
+    -quand on clique sur le menu "Tous les professionnels", on affiche une page qui liste les professionnels avec les champs : titre(nom), code postale et la ville. Pour cela vous faites un template spécifique en vous appuyant sur la hiérarchie.
+    -Quand on clique sur 1 professionnel, on affiche la page détaillée créer ce template qui indique le titre (nom), le contenu(description), la ville et le telephone.Pour cela vous faites un template spécifique en vous appuyant sur la hiérarchie. "il n'ay pas de query_post à faire"
+    ----------------------------------------
+    Afficher la dernière annonce particulier
+    --------------------------------------
+    Nous alons afficher la dernière annonce parue dans la page 
+
+
+
+
