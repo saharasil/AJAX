@@ -10,31 +10,28 @@ $pdo = new PDO('mysql:host=localhost;dbname=forum',
                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
               ));
 // print_r($_POST);
- if(!empty($_POST) && !empty($_POST['pseudo']) && !empty($_POST['mdp'])){
+if(!empty($_POST['pseudo']) && !empty($_POST['mdp'])){ // si les deux champs sont remplis
 
-            foreach($_POST as $indice => $valeur){//un foreach pour sécurisé 
+            foreach($_POST as $indice => $valeur){//un foreach pour échapper les données afin de  sécurisé lesdonnées
                 $_POST[$indice] =htmlspecialchars($valeur);
             }
+            
 
-            $requete = $pdo->prepare("INSERT INTO membre (pseudo, mdp) VALUE (:pseudo, :mdp)"); 
-            $succes = $requete->execute(array(
-                            ':pseudo'   => $_POST['pseudo'],
-                            ':mdp'      =>$_POST['mdp'],
-            ));
-        
+                $query = $pdo->prepare("SELECT * FROM membre WHERE pseudo = :pseudo AND mdp = :mdp");
+                $query->execute(array(  ':pseudo' => $_POST['pseudo'],
+                                        ':mdp'  => $_POST['mdp']
+                                    ));
 
-            if($succes){
-                $query = $pdo->query("SELECT * FROM membre");
-                    if($query->rowCount() != 0){
-                        $message = '<span style="color: green"> vous êtes connecté!</span>';
+                    if($query->rowCount()!= 0){ 
+                        // le pseudo et le mdp existe pour 1 membre :
 
-                    }else {
-                        $message = '<span style="color: red"> Erreur sur les identifiants.</span>';
-                        }
-                
-            }
+                            $message = '<span style="color: green"> vous êtes connecté!</span>';
+                    }else{ //erreur sur lesidentifiants car il n'ya pas de membre avec le pseudo et mdp donnés par l'internaute
+                            $message = '<span style="color: red"> Erreur sur les identifiants.</span>';
+                    }
 
-}else {
+
+}else { // sinon si l'un des champs est vide 
     $message = '<span style="color: red">Veuillez remplir tous les champs.</span>';
 }
 

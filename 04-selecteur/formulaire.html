@@ -1,0 +1,100 @@
+<!-- Objectif : créer des sélecteurs de produits combinales par couleurs, formes et matières pour afficher les tapis correspondants. -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tapis</title>
+    <style>
+        .photo{
+            cursor : pointer;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <form method="post">
+        <div>
+            <label for="matière">Matière</label><br>
+            <input type="checkbox" name="matiere[]" value="laine"> Laine
+            <input type="checkbox" name="matiere[]" value="viscose"> Viscose
+            
+        </div>
+        <div>
+            <label for="couleur">Couleur</label><br>
+            <input type="checkbox" name="couleur[]" value="blanc">Blanc
+            <input type="checkbox" name="couleur[]" value="gris">Gris
+            <input type="checkbox" name="couleur[]" value="bleu">Bleu
+        </div>
+        <div>
+            <label for="forme">Forme</label><br>
+            <input type="checkbox" name="forme[]" value="rectangulaire">rectangulaire
+            <input type="checkbox" name="forme[]" value="rond">Rond
+        </div>
+    </form>
+    <!-- exercice  -->
+    <div id="photo"></div><!-- pour afficher la photo du tapis séléctionné  -->
+     <!-- cours  -->
+
+     <div id="selection"></div><!--pour afficher a liste des tapis séléctonnés-->
+     <script>
+         $(function(){
+             //3- fonction de traitement de la reponse :
+             function reponse(reponsePHP){
+                 $('#selection').html(reponsePHP);
+                 
+             }
+            // 4 - on affiche la photo reçue dans #photo :
+             function reponse_photo(reponsePHP){
+                $('#photo').html(reponsePHP);
+             }
+             
+
+            //1- fonction pour envoyer la requête au serveur :
+            function ajax() {
+
+                let donnees = $('form').serialize(); // serialize() transforme les données du formulaire en un string formaté pour remplir le tableau $_POST côté serveur lors de l'envoie en ajax. Exemple de string: "matier[]=laine&couleur[]=bleu" où matiere et couleur correspondent aux "name" du formulaire et où laine et bleu correspondent aux "value" du dormulaire.
+                console.log(donnees);
+                
+                $.post('selection.php', donnees, reponse, 'html'); // URL de destination , données envoyées, fonction de traitement de la réponse, format de retour(html)
+
+            }
+            // 2- appels de la fonction ajax() :
+            ajax(); // on appelle tout de suite la fonction dès que la page est chargée pour afficher tous les tapis
+            $('form').change(ajax); // si les valeurs du formulaire changent, on appelle la fonction ajax pour qu'elle demande les tapis correspondants à la sélection faite par l'internaute.
+            //on l'utilise pour input type checkbox / select> option / input type radio
+
+
+            //---------------- //
+            // Exercice :
+            /*
+            1- quand on clique sur la photo d'un tapis , vous déclacher un alert (que vous supprimerez ensuite). pour cela il faut ajouter un click à la balise ".photo" qui est ajoutée dynamiquement au HTML(faire une recherche internet pour savoir ajouter ce click sur une balise affichée dynamiquement en jquery).
+            2- Vous envoyer à photo.php l'id_produit stocké dans l'attribut data-id_produit du tapis cliqué.
+            3- Dans photo.php vous sélectionnez en BDD le champ photo du produit et envoyer au navigateur une balise <img> avec la photo.
+            4- côté HTML, vous affichez la photo reçue dans le <div> #photo.
+                */
+                
+                //1- click sue une image de classe .photo : 
+                $('#selection').on('click','.photo',function(){// on ajoute un click sur les .photo descendants de #selection. cette méthode fonctionnne avec les éléments ajoutés dynamiquement.
+                    // alert(); pourtester le click
+                    let attribut = $(this).attr('data-id_produit'); //this permet de cibler la balise de classe .photo sur laquelle on a cliqué précisément. Puis on sélectionne son attribut "data-id_produit"avec la méthode attr().
+                    
+                    console.log(attribut);
+
+                    $.post('photo.php', {attribut : attribut}, reponse2, 'html');
+
+
+                });
+                
+
+
+
+            
+
+         }); // fin du document ready
+
+     </script>
+</body>
+</html>

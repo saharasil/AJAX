@@ -14,7 +14,7 @@ Créer une BDD "newsletter" avec une table "abonne" et 2 champs : id_email INT P
 </head>
 <body>
     <h1>Inscription à la newsletter</h1>
-    <form action="" method="post">
+    <form>
         <div><span id="resultat"></span></div> <!-- pour afficher les messages  -->
         <input type="text" id="email" placeholder="Saisissez votre email">
         
@@ -36,13 +36,38 @@ Créer une BDD "newsletter" avec une table "abonne" et 2 champs : id_email INT P
 
                 }
 
+                function erreur(message){
+                    $('#resultat').html('<span style ="color : red">une erreur est survenu </span>');
+                }
+
 
                 //1- Envoie de l'email au serveur avec une requête en POST : 
-                $.post('inscription.php', {email : email}, reponse, 'html'); //on envoie les données en POST. 4 argument :   URL du fichier de destination, les données envoyées sous forme d'objet  ou de string selon la syntaxe "propriete=valeur", la fonction de traitement de la réponse côté JS, format de la réponse (ici on attend HTML). $.post() est équivalent à jQuery.post().
+                // $.post('inscription.php', {email : email}, reponse, 'html'); //on envoie les données en POST. 4 argument :   URL du fichier de destination, les données envoyées sous forme d'objet  ou de string selon la syntaxe "propriete=valeur", la fonction de traitement de la réponse côté JS, format de la réponse (ici on attend HTML). $.post() est équivalent à jQuery.post().
+                
+                //3- On peut remplacer la fonction $.post ou $.get par $.ajax():
+                $.ajax({
+                    url    : 'inscription.php', //URL de destinaton de la requête HTTP
+                    type   : 'POST', //cela peuy être 'GET'
+                    data   :  {email : email}, // data =  données envoyées au serveur sous forme d'objet ou string 
+                    dataType : 'html', // format de la réponse ('xml', 'html', 'json' ou 'text')
+                    success  : reponse, // fonction qui se déclanche en cas de réception correcte de la réponse
+                    error    : erreur //fonction qui se déclanche si une erreur se produit lors de la réponse
+                }); 
+
 
             });//submit
 
         }); // fin  du document ready
+
+        /* GET OU POST ?
+            GET est plus rapide que POST est peut être  utilisé dans la plupart des cas .
+            ON utilise POST quand : 
+                - On ne veut pasappeler un fichier en cache mais des nouvelles provenant du serveur (d'une BDD par exemple)
+                - on veut envoyer des grands volumes de données, POST n'étant pas limité 
+                - on veut envoyer des données provenet de l'utilisateur comme des login/mdp, POST étant plus sécurisé.
+        */
+
+
 
     </script>
 </body>
