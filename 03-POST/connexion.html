@@ -25,11 +25,11 @@ creer une BDD "forum" avec une table "membre" et 3 champs  : id_membre INT PK AI
   <body>
     <div class="container mt-5">
       <h1>Inscription</h1>
-      <form action="" method="post">
+      <form >
         <div class="form-group">
           <div id="message"></div>
           <label for="pseudo">Pseudo</label>
-          <input type="text" name="pseudo" class="form-control" id="pseudo" aria-describedby="emailHelp">
+          <input type="text" name="pseudo" class="form-control" id="pseudo" >
         </div>
         <div class="form-group">
           <label for="mdp">Mot de passe</label>
@@ -45,7 +45,7 @@ creer une BDD "forum" avec une table "membre" et 3 champs  : id_membre INT PK AI
                     e.preventDefault(); // pour bloquer l'envoie du formulaire qui rafraîchit le navigateur
                     let pseudo = $('#pseudo').val(); //on récupère la valeur saisie dans le champ #pseudo.
                     let mdp= $('#mdp').val(); //on récupère la valeur saisie dans le champ #pseudo.
-
+                      // 2 -traitement de la réponse :
                         function reponse(reponsePHP){
 
                             console.log(reponsePHP); // on reçoit bien du HTML du serveur
@@ -54,10 +54,23 @@ creer une BDD "forum" avec une table "membre" et 3 champs  : id_membre INT PK AI
                               $('#message').html(reponsePHP);
                             }
                         }
+                        function erreur(message){
+                          $('#message').html('<span style ="color : red">une erreur est survenu </span>.');
 
-            
+                        }
 
-                    $.post('connexion.php',{pseudo : pseudo, mdp : mdp}, reponse, 'html');
+                        // 1- envoide la requête au serveur
+
+                    // $.post('connexion.php',{pseudo : pseudo, mdp : mdp}, reponse, 'html');
+                    $.ajax({
+                      url    : 'connexion.php', //URL de destinaton de la requête HTTP
+                      type   : 'POST', //cela peuy être 'GET'
+                      data   :  {pseudo : pseudo, mdp : mdp}, // data =  données envoyées au serveur sous forme d'objet ou string 
+                      dataType : 'json', // format de la réponse ('xml', 'html', 'json' ou 'text')
+                      success  : reponse, // fonction qui se déclanche en cas de réception correcte de la réponse
+                      error    : erreur
+
+                    });
 
 
 

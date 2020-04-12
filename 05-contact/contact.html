@@ -1,0 +1,74 @@
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <title>Forum</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1>Inscription</h1>
+      <p id="notice"></p> <!--Pour afficher les messages-->
+      <form action="">
+        <div class="form-group">
+            
+            <label for="nom">Nom</label>
+            <input type="text" name="nom" class="form-control" id="nom" placeholder="Votre nom" >
+          </div>
+          <div class="form-group">
+            
+            <label for="email">Email</label>
+            <input type="text" name="email" class="form-control" id="email" placeholder="Votre email">
+          </div>
+          <div class="form-group">
+            
+            <label for="message">Message</label>
+            <textarea  name="message" class="form-control" id="message" placeholder="Votre message" ></textarea>
+          </div>
+          <div class="form-group">
+            <input type="submit">
+          </div>
+      </form>
+      <script>
+
+        // 1-vous envoyer les information nom, email et message en ajax à contact.php quand le formulaire a été envoyé 
+        // 2-dans  contact.php si les champs ne sont pas vide  et que  le format de l'email est valide, le serveur répond "Merci pour votre message". SINON  il repond "Veuillez vérifier vos saisies".
+        // 3- contact.html reçoit la réponse et l'affiche dans #notice.
+        $(function(){
+            // 2- traitement de la réponse :
+            function reponse(reponsePHP){
+                $('#notice').html(reponsePHP); // reponsePHP contient la réponse du serveur que nous insérons dans la balise #notice.
+            }
+            function erreur(){
+                $('#notice').html('<span style ="color : red">une erreur est survenu </span>');
+            }
+
+            $('form').submit(function(e){
+                    e.preventDefault();// bloque le formulaire
+                    // envoie des données à contact.php:
+                    let donnees = $('form').serialize();  // pour récupérer les données du formulaire sous forme de string
+                    console.log(donnees);
+                    // $.post('contact.php', donnees, reponse, 'html');
+                    $.ajax({
+                      url    : 'contact.php', 
+                      type   : 'POST', 
+                      data   :  donnees, 
+                      dataType : 'html', 
+                      success  : reponse, 
+                      error    : erreur
+                    });
+            });// submit
+        }); // fin document ready
+
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </body>
+</html>
