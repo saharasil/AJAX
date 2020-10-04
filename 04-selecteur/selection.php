@@ -32,7 +32,7 @@ $forme = true;
 
      if(isset($_POST['couleur'])){ // si on a cliqué sur 1 matière 
         //matier IN ('laine', 'viscose')
-        /// on prend les valeurs du tableau $_POST['matiere'] et on lesmet sous forme de string en séparant les valeurs
+        /// on prend les valeurs du tableau $_POST['matiere'] et on les met sous forme de string en séparant les valeurs
         //     echo '<pre>';
         // print_r("couleur IN ('" . implode("','",$_POST['couleur']) ."')");
         // echo '</pre>';

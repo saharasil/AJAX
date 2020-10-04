@@ -26,7 +26,7 @@ if(!empty($_POST['pseudo']) && !empty($_POST['mdp'])){ // si les deux champs son
                         // le pseudo et le mdp existe pour 1 membre :
 
                             $message = '<span style="color: green"> vous êtes connecté!</span>';
-                    }else{ //erreur sur lesidentifiants car il n'ya pas de membre avec le pseudo et mdp donnés par l'internaute
+                    }else{ //erreur sur les identifiants car il n'ya pas de membre avec le pseudo et mdp donnés par l'internaute
                             $message = '<span style="color: red"> Erreur sur les identifiants.</span>';
                     }
 

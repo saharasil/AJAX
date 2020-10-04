@@ -23,7 +23,7 @@
 
                 // 2- Fonction qui traite la réponse du serveur 
                 function reponse(reponsePHP){ // le paramètre reponsePHP (vous avez le choix du nom) reçoit la réponse du serveur directement sous forme d'objet JS
-                    console.log(reponsePHP); // pour vérifier quen l'on reçoit bien cet objet. On voit lespropriétés "meteo" et "temperature" qui correspondes aux indives du tableau $retour côté PHP.
+                    console.log(reponsePHP); // pour vérifier quen l'on reçoit bien cet objet. On voit les propriétés "meteo" et "temperature" qui correspondes aux indices du tableau $retour côté PHP.
                     if(reponsePHP.meteo && reponsePHP.temperature) { // si existe bien les proprétés "meteo" et "temperature"  dans l'objet reponsePHP, alors on peut les afficher
                         $('#resultat').html(reponsePHP.meteo + ' et il fait ' + reponsePHP.temperature + ' .'); // on remplit le <p> avec la météo et la température .
 
